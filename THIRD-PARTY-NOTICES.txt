@@ -1,0 +1,21 @@
+Ableton Now Playing 1.0 bundles these third-party components:
+
+Node.js v22.23.2 (Jod LTS), official darwin-arm64 and darwin-x64 builds.
+https://nodejs.org/
+https://nodejs.org/dist/v22.23.2/
+Full Node and dependency license notices: runtime/arm64/LICENSE and runtime/x64/LICENSE.
+Only the runtime executable and its license are included, not npm or headers.
+Official archive SHA-256 checksums were verified:
+arm64: 61130f394c1630d211dd50aecc4353d379480f36d3ac913cd85dbba1aed585c6
+x64:   58e99022c2ff89395576cc7fd4d98cea24bb68081475d5f88b801ee8729fb026
+The installer selects the matching native runtime.
+
+AbletonOSC, by Daniel Jones / ideoforms and contributors, MIT license.
+https://github.com/ideoforms/AbletonOSC
+Snapshot: master archive downloaded September 17, 2026.
+Archive SHA-256: b260783e45babaf946787e7d1facc4c2ea7cd8f5cccda45c583a9be298b63cab
+Included without code modifications; python-osc LICENSE.txt restored from upstream. Full license: vendor/AbletonOSC/LICENSE.md.
+Includes upstream's vendored pythonosc (Unlicense). See vendor/AbletonOSC/pythonosc/LICENSE.txt, sourced from https://github.com/attwad/python-osc/blob/main/LICENSE.txt.
+
+Ableton and OBS are separate applications and are not included.
+This widget is an independent utility, not an official Ableton or OBS product.

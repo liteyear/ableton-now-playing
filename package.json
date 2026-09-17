@@ -1,0 +1,13 @@
+{
+  "name": "ableton-now-playing",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A free local Ableton Live Session View now-playing widget for OBS",
+  "license": "MIT",
+  "scripts": {
+    "test": "node tests/integration.cjs"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

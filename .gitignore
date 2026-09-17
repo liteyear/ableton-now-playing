@@ -1,0 +1,8 @@
+dist/
+.cache/
+node_modules/
+.DS_Store
+*.log
+app/Now-Playing.txt
+__pycache__/
+*.pyc

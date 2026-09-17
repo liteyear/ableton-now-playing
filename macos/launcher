@@ -1,0 +1,34 @@
+#!/bin/bash
+set -e
+error() { /usr/bin/osascript -e 'display dialog "Ableton Now Playing could not start. Check that Ableton and any older widget are closed, then try again. The log is in your home folder under Library/Logs/Ableton-Now-Playing.log." buttons {"OK"} default button "OK" with icon caution' >/dev/null; }
+trap error ERR
+BUNDLE="$(cd "$(dirname "$0")/../.." && pwd)"
+if [ "$(/usr/bin/sw_vers -productVersion | /usr/bin/cut -d. -f1)" -lt 11 ]; then
+ /usr/bin/osascript -e 'display dialog "This app requires macOS 11 or newer." buttons {"OK"}' >/dev/null
+ exit 0
+fi
+DATA="$HOME/Library/Application Support/Ableton Now Playing"
+/bin/mkdir -p "$DATA" "$HOME/Library/Logs"
+exec >>"$HOME/Library/Logs/Ableton-Now-Playing.log" 2>&1
+ARCH=x64
+if [ "$(/usr/sbin/sysctl -in hw.optional.arm64 2>/dev/null || true)" = 1 ]; then ARCH=arm64; fi
+RUNTIME="$BUNDLE/Contents/Resources/runtime/$ARCH/node"
+EXISTING=$(/usr/bin/curl -fsS --max-time 2 http://127.0.0.1:3210/health 2>/dev/null || true)
+case "$EXISTING" in
+ *'"app":"ableton-now-playing-community"'*'"version":"1.0.0"'*) /usr/bin/open http://127.0.0.1:3210/; exit 0 ;;
+ ?*) /usr/bin/osascript -e 'display dialog "An older widget or another service is running. Close it before opening Ableton Now Playing. You can stop an older node process in Activity Monitor." buttons {"OK"}' >/dev/null; exit 0 ;;
+esac
+if [ ! -f "$DATA/config.json" ]; then /bin/cp "$BUNDLE/Contents/Resources/app/config.json" "$DATA/config.json"; fi
+NP_CONFIG="$DATA/config.json" /usr/bin/nohup "$RUNTIME" "$BUNDLE/Contents/Resources/app/server.js" </dev/null &
+PID=$!
+for ((i=0;i<30;i++)); do
+ if /usr/bin/curl -fsS --max-time 1 http://127.0.0.1:3210/health >/dev/null 2>&1; then
+  /usr/bin/open http://127.0.0.1:3210/
+  exit 0
+ fi
+ if ! kill -0 "$PID" 2>/dev/null; then wait "$PID"; exit 1; fi
+ /bin/sleep 0.2
+done
+kill "$PID" 2>/dev/null || true
+error
+exit 1
